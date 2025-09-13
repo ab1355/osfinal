@@ -30,8 +30,9 @@ export default function RootLayout({
   }, []);
 
 	return (
-		<html lang="en">
-			<body className={`${inter.className} bg-primary text-white`}>
+		<html lang="en" className="dark">
+			<body className={`${inter.className} bg-background text-foreground`}>
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('/noise.png')] opacity-20 pointer-events-none" />
 				<div className="flex">
 					<Sidebar />
 					<main className="flex-1 p-6">{children}</main>

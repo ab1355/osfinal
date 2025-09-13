@@ -2,9 +2,11 @@ import AkashDeployment from "@/components/deployment/AkashDeployment";
 
 export default function DeployPage() {
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <h1 className="text-3xl font-bold mb-6">Akash Network Deployment</h1>
-      <AkashDeployment />
+    <div className="p-8 text-white">
+      <h1 className="text-4xl font-bold mb-8">Akash Network Deployment</h1>
+      <div className="bg-glass border border-glass rounded-lg shadow-lg p-6 backdrop-blur-glass">
+        <AkashDeployment />
+      </div>
     </div>
   );
 }

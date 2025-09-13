@@ -17,16 +17,15 @@ const Sidebar = () => {
 	];
 
 	return (
-		<div className="bg-gray-900 text-white w-64 p-6">
-			<h2 className="text-2xl font-bold mb-6">Menu</h2>
+        <div className="w-64 p-6 bg-glass border-r border-glass backdrop-blur-glass">
+			<h2 className="text-2xl font-bold mb-6 text-foreground">Menu</h2>
 			<nav>
 				<ul>
 					{links.map((link) => (
 						<li key={link.href} className="mb-4">
 							<Link
 								href={link.href}
-								className={`hover:text-indigo-400 ${pathname === link.href ? "text-indigo-400" : ""}`}
-							>
+                                className={`hover:text-primary ${pathname === link.href ? "text-primary" : "text-foreground/80"}`}>
 								{link.label}
 							</Link>
 						</li>

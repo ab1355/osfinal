@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { ChartBarIcon, DocumentTextIcon, LightBulbIcon } from '@heroicons/react/24/solid';
 
 interface ResearchImpactAnalysis {
   paper: string;
@@ -11,9 +12,7 @@ interface ResearchImpactAnalysis {
 // Mock function to get research impact analysis
 const analyzeResearch = async (): Promise<ResearchImpactAnalysis[]> => {
   console.log("Analyzing research papers...");
-  // In a real implementation, this would use a language model to analyze papers
-  await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate async operation
-  console.log("Research analysis complete.");
+  await new Promise(resolve => setTimeout(resolve, 1500));
   return [
     {
       paper: "Scaling Transformers to 1 Trillion Parameters",
@@ -47,22 +46,37 @@ export default function ResearchImpact() {
     fetchAnalysis();
   }, []);
 
+  const getImpactColor = (score: number) => {
+    if (score > 90) return 'text-green-400';
+    if (score > 85) return 'text-yellow-400';
+    return 'text-orange-400';
+  };
+
   return (
-    <div className="bg-gray-800/50 p-6 rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Research Impact Analysis</h2>
+    <div className="bg-glass border border-glass rounded-lg shadow-lg p-6 backdrop-blur-glass text-white">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">Research Impact Analysis</h2>
+        <LightBulbIcon className="h-8 w-8 text-yellow-300" />
+      </div>
       {isLoading ? (
-        <p className="text-gray-400">Analyzing research papers...</p>
+        <div className="flex justify-center items-center h-48">
+            <p className="text-white/70">Analyzing research papers...</p>
+        </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {analysis.map((item, index) => (
-            <div key={index} className="bg-gray-700/50 p-4 rounded-md">
+            <div key={index} className="bg-white/10 p-4 rounded-lg border border-white/20 transform hover:scale-105 transition-transform duration-300">
               <div className="flex justify-between items-start">
-                <h3 className="font-bold text-lg">{item.paper}</h3>
-                <span className={`font-bold text-lg ${item.impactScore > 90 ? 'text-green-400' : 'text-yellow-400'}`}>
-                  {item.impactScore}
-                </span>
+                <div className="flex items-center space-x-3">
+                    <DocumentTextIcon className="h-6 w-6 text-purple-400" />
+                    <h3 className="font-bold text-lg">{item.paper}</h3>
+                </div>
+                <div className={`flex items-center space-x-2 font-bold text-xl ${getImpactColor(item.impactScore)}`}>
+                    <ChartBarIcon className="h-5 w-5" />
+                    <span>{item.impactScore}</span>
+                </div>
               </div>
-              <p className="text-gray-400 mt-2">{item.summary}</p>
+              <p className="text-white/80 mt-3 pl-9">{item.summary}</p>
             </div>
           ))}
         </div>

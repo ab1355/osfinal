@@ -7,20 +7,20 @@ interface TaskQueueProps {
 
 export function TaskQueue({ tasks }: TaskQueueProps) {
   return (
-    <div className="bg-gray-800/50 rounded-lg p-4">
-      <h2 className="text-lg font-semibold mb-2">Task Queue</h2>
-      <div className="space-y-2">
+    <div className="bg-glass border border-glass rounded-lg shadow-lg p-6 backdrop-blur-glass">
+      <h2 className="text-xl font-bold mb-4">Task Queue</h2>
+      <div className="space-y-4">
         {tasks.map((task) => (
-          <div key={task.id} className="bg-gray-700/50 p-3 rounded-md">
-            <p className="font-medium">{task.description}</p>
-            <div className="text-sm text-gray-400 flex justify-between">
+          <div key={task.id} className="bg-white/10 p-4 rounded-lg">
+            <p className="font-semibold">{task.description}</p>
+            <div className="text-sm text-white/70 flex justify-between mt-2">
               <span>{task.category}</span>
               <span>{task.status}</span>
             </div>
           </div>
         ))}
         {tasks.length === 0 && (
-          <p className="text-gray-500">No tasks in the queue.</p>
+          <p className="text-white/50">No tasks in the queue.</p>
         )}
       </div>
     </div>
