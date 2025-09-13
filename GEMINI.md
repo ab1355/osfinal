@@ -2,6 +2,10 @@
 
 These guidelines define the operational principles and capabilities of an AI agent (e.g., Gemini) interacting with Next.js projects within the Firebase Studio environment. The goal is to enable an efficient, automated, and error-resilient application design and development workflow that leverages the full power of the Next.js framework.
 
+**Project Structure (App Router Enhanced):**
+371-os-prototype/ ├── src/ │ ├── app/ │ │ ├── dashboard/page.tsx # Main roadmap dashboard │ │ ├── research/page.tsx # Research automation (✅ COMPLETED) │ │ ├── agents/page.tsx # C-Suite agent management │ │ ├── deploy/page.tsx # Akash deployment interface │ │ └── layout.tsx │ ├── components/ │ │ ├── roadmap/ # Live roadmap components │ │ ├── research/ # Research integration (✅ QueryGenerator, AgentFeed) │ │ ├── agents/ # C-Suite agent coordination │ │ ├── deployment/ # Akash deployment controls │ │ ├── automation/ # Bytebot task management │ │ └── ui/ # Shared UI components │ ├── lib/ │ │ ├── akash/ # Akash Network integration │ │ ├── bytebot/ # Bytebot API integration
+│ │ ├── questflow/ # QuestFlow agent coordination │ │ └── perplexity/ # Research automation │ └── types/ │ ├── deployment.ts # Akash deployment types │ ├── automation.ts # Bytebot task types │ └── [existing types...]
+
 ## **Environment & Context Awareness**
 
 The AI operates within the Firebase Studio development environment, which provides a Code OSS-based IDE and a pre-configured environment for Next.js development.
@@ -38,11 +42,11 @@ When requested for Firebase add the following the server configurations to .idx/
 The AI is empowered to modify the codebase autonomously based on user requests. The AI is creative and anticipates features that the user might need even if not explicitly requested.
 
 * **Core Code Assumption:** The AI will primarily work with React components (`.tsx` or `.jsx`) within the `/app` directory. It will create new routes, layouts, and components as needed.
-* **Package Management:** The AI will use `npm` or `yarn` for package management.
+* **Package Management:** The AI will use `bun` for package management.
 * **Next.js CLI:** The AI will use the Next.js CLI for common development tasks:
-  * `npm run build`: To build the project for production.
-  * `npm run lint`: To run ESLint and check for code quality issues.
-
+  * `use bun`: To build the project for production.
+  * "use biome"`: To run ESLint and check for code quality issues.
+### NO NPM/ESLINT USE BUN/BIOME
 ## **Next.js Core Concepts (App Router)**
 
 ### **Server Components by Default**

@@ -1,0 +1,42 @@
+# akash-deployment.yml for 371 OS prototype
+version: "2.0"
+services:
+  web:
+    image: node:18-alpine
+    expose:
+      - port: 3000
+        as: 80
+        to:
+          - global: true
+    env:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+    command:
+      - "sh"
+      - "-c"
+      - |
+        npm install -g pnpm
+        pnpm install --frozen-lockfile
+        pnpm build
+        pnpm start
+profiles:
+  compute:
+    web:
+      resources:
+        cpu:
+          units: 0.1          # 0.1 CPU (100m)
+        memory:
+          size: 512Mi
+        storage:
+          size: 1Gi
+  placement:
+    dcloud:
+      pricing:
+        web:
+          denom: uakt
+          amount: 100         # Ultra-low cost deployment
+deployment:
+  web:
+    dcloud:
+      profile: web
+      count: 1
