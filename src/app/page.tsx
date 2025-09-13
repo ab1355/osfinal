@@ -1,5 +1,5 @@
 import AgentCard from "../components/agents/AgentCard";
-import CSuiteStatus from "../components/agents/CSuiteStatus";
+import CSuiteStatus from "../components/c-suite/CSuiteStatus";
 import RoadmapVisualization from "../components/roadmap/RoadmapVisualization";
 
 export default function DashboardPage() {
