@@ -1,4 +1,4 @@
-import CSuiteStatus from "@/components/agents/CSuiteStatus";
+import CSuiteStatus from "@/components/c-suite/CSuiteStatus";
 import AgentCard from "@/components/agents/AgentCard";
 import CoordinationMatrix from "@/components/agents/CoordinationMatrix";
 

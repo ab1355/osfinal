@@ -1,33 +1,44 @@
-import { automationTasks } from "../../lib/tasks";
-import type { BytebotTask } from "../../types/automation";
+'use client';
 
-const TaskCard = ({ task }: { task: BytebotTask }) => (
-	<div className="bg-gray-800 p-4 rounded-lg shadow-md mb-4">
-		<div className="flex justify-between items-center">
-			<h3 className="text-lg font-bold">{task.description}</h3>
-			<span
-				className={`px-2 py-1 text-sm font-semibold rounded-full ${
-					task.priority === "HIGH" ? "bg-red-500" : "bg-yellow-500"
-				}`}
-			>
-				{task.priority}
-			</span>
-		</div>
-		<p className="text-gray-400">Category: {task.category}</p>
-		<p className="text-gray-400">Status: {task.status}</p>
-		{task.agent && <p className="text-gray-400">Agent: {task.agent}</p>}
-	</div>
-);
+import { useState, useEffect } from 'react';
+import { QuestFlowBridge } from '@/lib/questflow-bridge';
+import WorkflowStatusCard from '@/components/dashboard/WorkflowStatusCard';
+import CSuiteStatusCard from '@/components/dashboard/CSuiteStatusCard';
+import ResourceMonitor from '@/components/optimization/ResourceMonitor';
+import AkashDeployment from '@/components/deployment/AkashDeployment';
+import CostMonitor from '@/components/dashboard/CostMonitor';
+import { IntegrationStatus } from '@/components/dashboard/IntegrationStatus';
 
-export default function DashboardPage() {
-	return (
-		<div className="p-4">
-			<h1 className="text-2xl font-bold mb-4">Automation Tasks</h1>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-				{automationTasks.map((task) => (
-					<TaskCard key={task.id} task={task} />
-				))}
-			</div>
-		</div>
-	);
+export default function Dashboard() {
+  const [workflows, setWorkflows] = useState([]);
+  const [csuiteStatus, setCSuiteStatus] = useState({});
+  const questflow = new QuestFlowBridge();
+
+  useEffect(() => {
+    const loadData = async () => {
+      const workflowData = await questflow.getWorkflowStatus();
+      setWorkflows(workflowData);
+      const csuiteData = await questflow.getCSuiteStatus();
+      setCSuiteStatus(csuiteData);
+    };
+
+    loadData();
+    const interval = setInterval(loadData, 5000); // 5s updates
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="p-4 sm:p-6 lg:p-8">
+        <h1 className="text-3xl font-bold mb-6">Live Dashboard</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <WorkflowStatusCard workflows={workflows} />
+          <CSuiteStatusCard status={csuiteStatus} />
+          <ResourceMonitor />
+          <AkashDeployment onDeploy={questflow.deployToAkash} />
+          <CostMonitor />
+          <IntegrationStatus />
+        </div>
+    </div>
+  );
 }

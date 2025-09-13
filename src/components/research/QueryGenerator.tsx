@@ -1,34 +1,55 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { PerplexityClient } from '@/lib/perplexity';
+import { automationRules } from '@/lib/automation';
+import { ResearchFindings } from '@/types/questflow';
 
-export default function QueryGenerator() {
-	const [query, setQuery] = useState("");
+interface QueryGeneratorProps {
+  onComplete: (findings: ResearchFindings) => void;
+}
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		// Handle query submission logic here
-		console.log(query);
-	};
+export default function QueryGenerator({ onComplete }: QueryGeneratorProps) {
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const perplexity = new PerplexityClient();
 
-	return (
-		<div className="bg-secondary p-4 rounded-lg">
-			<h2 className="text-xl font-bold mb-4 font-serif">Query Generator</h2>
-			<form onSubmit={handleSubmit}>
-				<textarea
-					className="w-full bg-accent p-2 rounded-lg mb-4 text-white font-sans"
-					rows={5}
-					placeholder="Enter your research query..."
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-				/>
-				<button
-					type="submit"
-					className="w-full bg-accent hover:bg-opacity-75 text-white font-bold py-2 px-4 rounded-lg font-sans"
-				>
-					Generate
-				</button>
-			</form>
-		</div>
-	);
+  const handleSearch = async () => {
+    if (!query) return;
+    setIsLoading(true);
+    try {
+      const findings = await perplexity.analyze(query);
+      onComplete(findings);
+      automationRules.onResearchFindings(findings);
+    } catch (error) {
+      console.error("Error analyzing query:", error);
+    }
+    setIsLoading(false);
+    setQuery('');
+  };
+
+  return (
+    <Card className="bg-gray-800/50 border-gray-700">
+      <CardHeader>
+        <CardTitle>Research Query</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex space-x-2">
+          <Input 
+            type="text" 
+            placeholder="Enter your research query..." 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-grow bg-gray-700 border-gray-600 text-white"
+          />
+          <Button onClick={handleSearch} disabled={isLoading}>
+            {isLoading ? 'Analyzing...' : 'Analyze'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }

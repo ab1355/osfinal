@@ -1,18 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-interface ResourceUsage {
-  cpu: number;
-  memory: number;
-  network: number;
-}
+import { automationRules } from '@/lib/automation';
+import { ResourceUsage } from '@/types/questflow';
 
 // Mock function to get resource usage
 const getResourceUsage = (): ResourceUsage => ({
   cpu: Math.random() * 100,
   memory: Math.random() * 100,
-  network: Math.random() * 100,
+  disk: Math.random() * 100,
 });
 
 const ProgressBar = ({ value, label, color }: { value: number; label: string; color: string }) => (
@@ -32,7 +28,9 @@ export default function ResourceMonitor() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setUsage(getResourceUsage());
+      const newUsage = getResourceUsage();
+      setUsage(newUsage);
+      automationRules.onResourceThreshold(newUsage);
     }, 2000);
     return () => clearInterval(interval);
   }, []);
@@ -43,7 +41,7 @@ export default function ResourceMonitor() {
       <div className="space-y-4">
         <ProgressBar value={usage.cpu} label="CPU Usage" color="bg-blue-600" />
         <ProgressBar value={usage.memory} label="Memory Usage" color="bg-green-600" />
-        <ProgressBar value={usage.network} label="Network Usage" color="bg-purple-600" />
+        <ProgressBar value={usage.disk} label="Disk Usage" color="bg-purple-600" />
       </div>
     </div>
   );
