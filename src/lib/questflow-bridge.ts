@@ -1,74 +1,89 @@
-import { DeploymentConfig, DeploymentResult, MeetingResult, WorkflowStatus, ResearchFindings } from "@/types/questflow";
+import { DeploymentConfig, DeploymentResult, MeetingResult, WorkflowStatus, ResearchFindings, CSuiteStatus, TechStackPayload, ScalePayload, OptimizePayload } from "@/types/questflow";
 
 export class QuestFlowBridge {
-  private baseUrl = process.env.NEXT_PUBLIC_QUESTFLOW_API_URL || 'http://localhost:3001/api';
+  private baseUrl = process.env.NEXT_PUBLIC_QUESTFLOW_API_URL || 'http://localhost:8000/api/v1';
 
-  // Connect to 371 OS QuestFlow backend
+  private async handleResponse<T>(response: Response): Promise<T> {
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API request failed with status ${response.status}: ${errorText}`);
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    return response.json() as Promise<T>;
+  }
+
+  private async performFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        ...options,
+      });
+      return this.handleResponse<T>(response);
+    } catch (error) {
+      console.error(`Network or fetch error for endpoint ${endpoint}:`, error);
+      throw error;
+    }
+  }
+
   async getWorkflowStatus(): Promise<WorkflowStatus[]> {
-    // const response = await fetch(`${this.baseUrl}/workflows/status`);
-    // return response.json();
     console.log("Fetching workflow statuses...");
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return [
-      { agent: "CEO", task: {id: "1", name:"Review Q3 budget"}, status: "Working" },
-      { agent: "CTO", task: {id: "2", name:"Upgrade database"}, status: "Working" },
-      { agent: "CFO", task: null, status: "Idle" },
-    ];
+    return this.performFetch<WorkflowStatus[]>('/workflows/status');
   }
 
-  async getCSuiteStatus(): Promise<{ [key: string]: any }> {
+  async getCSuiteStatus(): Promise<CSuiteStatus> {
     console.log("Fetching C-Suite status...");
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return {
-        "CEO": { online: true, task: "Reviewing Q3 Budget" },
-        "CTO": { online: true, task: "Overseeing database migration" },
-        "CFO": { online: false, task: "On vacation" }
-    };
+    return this.performFetch<CSuiteStatus>('/csuite/status');
   }
 
-  async triggerCSuiteMeeting(): Promise<MeetingResult> {
-    // const response = await fetch(`${this.baseUrl}/agents/csuite/meeting`, {
-    //   method: 'POST'
-    // });
-    // return response.json();
-    console.log("Triggering C-Suite meeting...");
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { meetingId: "meeting-123", status: "Scheduled" };
+  async triggerCSuiteMeeting(topic: string): Promise<MeetingResult> {
+    console.log("Triggering C-Suite meeting with topic:", topic);
+    return this.performFetch<MeetingResult>('/csuite/meet', {
+      method: 'POST',
+      body: JSON.stringify({ topic }),
+    });
   }
 
   async deployToAkash(config: DeploymentConfig): Promise<DeploymentResult> {
-    // const response = await fetch(`${this.baseUrl}/deploy/akash`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(config)
-    // });
-    // return response.json();
     console.log("Deploying to Akash with config:", config);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    return { deploymentId: "akash-deployment-456", status: "Success" };
+    return this.performFetch<DeploymentResult>('/deploy/akash', {
+      method: 'POST',
+      body: JSON.stringify(config),
+    });
   }
 
   async updateWorkflowsFromResearch(findings: ResearchFindings): Promise<void> {
-    // const response = await fetch(`${this.baseUrl}/workflows/update-from-research`, {
-    //   method: 'POST',
-    //   body: JSON.stringify(findings)
-    // });
-    // return response.json();
     console.log("Updating workflows from research findings:", findings);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    return this.performFetch<void>('/research/update', {
+      method: 'POST',
+      body: JSON.stringify(findings),
+    });
   }
 
-  async updateTechStack(recommendations: string[]): Promise<void> {
-    console.log("Updating tech stack with recommendations:", recommendations);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async updateTechStack(payload: TechStackPayload): Promise<void> {
+    console.log("Updating tech stack with recommendations:", payload);
+     return this.performFetch<void>('/automation/tech-stack', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
   }
 
-  async scaleResources(direction: 'up' | 'down', factor: number): Promise<void> {
-    console.log(`Scaling resources ${direction} by a factor of ${factor}`);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async scaleResources(payload: ScalePayload): Promise<void> {
+    console.log(`Scaling resources with payload:`, payload);
+    return this.performFetch<void>('/automation/scale', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
   }
 
-  async optimizeDeployment(): Promise<void> {
-    console.log("Optimizing deployment...");
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  async optimizeDeployment(payload: OptimizePayload): Promise<void> {
+    console.log("Optimizing deployment with payload:", payload);
+    return this.performFetch<void>('/automation/optimize', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+    });
   }
 }

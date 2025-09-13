@@ -1,40 +1,44 @@
-export interface WorkflowStatus {
-  agent: string;
-  task: { id: string; name: string } | null;
-  status: string;
-}
-
-export interface MeetingResult {
-  meetingId: string;
-  status: string;
-}
-
 export interface DeploymentConfig {
-  cpu: string;
-  memory: string;
-  storage: string;
+  // Define the properties for a deployment configuration
+  [key: string]: any;
 }
 
 export interface DeploymentResult {
-  deploymentId: string;
-  status: string;
+  // Define the properties for a deployment result
+  [key: string]: any;
+}
+
+export interface MeetingResult {
+  // Define the properties for a meeting result
+  [key: string]: any;
+}
+
+export interface WorkflowStatus {
+  // Define the properties for a workflow status
+  [key: string]: any;
 }
 
 export interface ResearchFindings {
-  impactScore: number;
-  summary: string;
-  technologies: string[];
-  recommendations: string[];
+  // Define the properties for research findings
+  [key: string]: any;
 }
 
-export interface ResourceUsage {
-  cpu: number;
-  memory: number;
-  disk: number;
+export interface CSuiteStatus {
+    // Define the properties for a CSuiteStatus
+    [key: string]: any;
 }
 
-export interface CostAnalysis {
-  currentSpend: number;
-  optimizedSpend: number;
-  savingsOpportunity: number;
+export interface TechStackPayload {
+    // Define the properties for a TechStackPayload
+    [key: string]: any;
+}
+
+export interface ScalePayload {
+    // Define the properties for a ScalePayload
+    [key: string]: any;
+}
+
+export interface OptimizePayload {
+    // Define the properties for a OptimizePayload
+    [key: string]: any;
 }

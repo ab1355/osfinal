@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircleIcon, RocketLaunchIcon } from '@heroicons/react/24/solid';
+import Image from 'next/image';
 
 // Dummy data for agent, replace with actual data prop
 const agent = {
@@ -16,7 +17,7 @@ export default function AgentCard() {
     <div className="bg-glass border border-glass rounded-lg shadow-lg p-6 backdrop-blur-glass text-white transform hover:scale-105 transition-transform duration-300">
       <div className="flex items-center space-x-4">
         <div className="relative">
-          <img src={agent.avatar} alt={agent.name} className="w-20 h-20 rounded-full border-2 border-purple-500" />
+          <Image src={agent.avatar} alt={agent.name} width={80} height={80} className="rounded-full border-2 border-purple-500" />
           <span className={`absolute bottom-0 right-0 block h-5 w-5 rounded-full ${agent.status === 'Active' ? 'bg-green-500' : 'bg-gray-500'} border-2 border-glass`}></span>
         </div>
         <div>

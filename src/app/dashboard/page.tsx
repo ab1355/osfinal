@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { QuestFlowBridge } from '@/lib/questflow-bridge';
 import WorkflowStatusCard from '@/components/dashboard/WorkflowStatusCard';
 import CSuiteStatusCard from '@/components/dashboard/CSuiteStatusCard';
@@ -8,11 +8,12 @@ import ResourceMonitor from '@/components/optimization/ResourceMonitor';
 import AkashDeployment from '@/components/deployment/AkashDeployment';
 import CostMonitor from '@/components/dashboard/CostMonitor';
 import { IntegrationStatus } from '@/components/dashboard/IntegrationStatus';
+import { WorkflowStatus } from '@/types/questflow';
 
 export default function Dashboard() {
-  const [workflows, setWorkflows] = useState([]);
-  const [csuiteStatus, setCSuiteStatus] = useState({});
-  const questflow = new QuestFlowBridge();
+  const [workflows, setWorkflows] = useState<WorkflowStatus[]>([]);
+  const [csuiteStatus, setCSuiteStatus] = useState<{ [key: string]: any }>({});
+  const questflow = useMemo(() => new QuestFlowBridge(), []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -26,7 +27,7 @@ export default function Dashboard() {
     const interval = setInterval(loadData, 5000); // 5s updates
 
     return () => clearInterval(interval);
-  }, []);
+  }, [questflow]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">

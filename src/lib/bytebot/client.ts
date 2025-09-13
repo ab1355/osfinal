@@ -1,4 +1,4 @@
-import type { BytebotTask } from "../types/automation";
+import type { BytebotTask } from "../../types/automation";
 
 export class BytebotClient {
 	private baseUrl = "http://localhost:9991"; // Bytebot Agent API
@@ -13,8 +13,9 @@ export class BytebotClient {
 		return response.json();
 	}
 
-	async monitorTask(_taskId: string): Promise<BytebotTask> {
+	async monitorTask(_taskId: string): Promise<BytebotTask | undefined> {
 		// Real-time task monitoring with WebSocket
+    return undefined
 	}
 
 	async uploadFiles(_taskId: string, _files: File[]): Promise<void> {
